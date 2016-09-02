@@ -1,0 +1,25 @@
+##################
+# File managed by puppet, don't edit
+##################
+version: '2'
+networks:
+  postfix:
+<% if scope['postfix_docker::network'] != :undef -%>
+    external:
+      name: <%= scope['postfix_docker::network'] %>
+<% end -%>
+services:
+  postfix:
+    image: exoplatform/smtp:<%= scope['postfix_docker::image_version'] %>
+    expose:
+      - 25
+    volumes:
+      - <%= scope['postfix_docker::log_dir'] %>:/var/log/mail
+    networks:
+      postfix:
+        aliases:
+          - smtp
+    labels:
+<% scope['postfix_docker::container_labels'].each do |label| -%>
+      - "<%= label %>"
+<% end -%>
